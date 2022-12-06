@@ -18,16 +18,17 @@ const HeaderContent = () => {
   if (!user) return null;
 
   return (
-    <Box sx={{ ml: 0.75 }}>
+    <>
       <ButtonBase
         sx={{
           p: 0.25,
           bgcolor: "transparent",
           borderRadius: 1,
           "&:hover": { bgcolor: "secondary.lighter" },
+          flexGrow: 1,
         }}
       >
-        <Typography variant="subtitle1">{user.name}</Typography>
+        <Typography variant="subtitle1">Welcome, {user.name}</Typography>
       </ButtonBase>
       <Button
         color="inherit"
@@ -38,7 +39,7 @@ const HeaderContent = () => {
       >
         Logout
       </Button>
-    </Box>
+    </>
   );
 };
 

@@ -33,7 +33,7 @@ const Header = () => {
 
   // common header
   const mainHeader = (
-    <Toolbar>
+    <Toolbar sx={{ width: "100%" }}>
       <HeaderContent />
     </Toolbar>
   );
@@ -45,8 +45,7 @@ const Header = () => {
     elevation: 0,
     sx: {
       borderBottom: `1px solid ${theme.palette.divider}`,
-      alignItems: "flex-end",
-      // boxShadow: theme.customShadows.z1
+      alignItems: "center",
     },
   };
 
