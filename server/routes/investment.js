@@ -3,7 +3,7 @@ const Investment = require("../models/investment");
 
 const router = require("express").Router();
 
-router.get("/all", async (req, res) => {
+router.get("/all", auth, async (req, res) => {
   try {
     const investments = await Investment.findAll({
       where: { user_id: req.user.id },

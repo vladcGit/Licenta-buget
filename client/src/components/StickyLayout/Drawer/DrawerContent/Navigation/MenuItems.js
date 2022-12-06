@@ -115,7 +115,7 @@ const investments = {
 };
 
 const menuItems = {
-  items: [dashboard, authentication, transactions, goals, investments],
+  items: [dashboard, transactions, goals, investments],
 };
 
 export default menuItems;

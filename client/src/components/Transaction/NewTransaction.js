@@ -70,7 +70,7 @@ export default function NewTransaction() {
         },
         { headers: { Authorization: localStorage.getItem("token") } }
       );
-      navigate("/");
+      navigate("/transactions");
     } catch (e) {
       const err = e.response;
       console.log(err);

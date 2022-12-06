@@ -9,37 +9,10 @@ import SignUp from "./Authentication/Signup";
 import ProtectedRoute from "./ProtectedRoute";
 import AllTransactions from "./Transaction/AllTransactions";
 import NotFoundPage from "./NotFoundPage";
-
-/*
-import { createTheme } from "@mui/material/styles";
-const { palette } = createTheme();
-const { augmentColor } = palette;
-const createColor = (mainColor) => augmentColor({ color: { main: mainColor } });
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#0e72e6",
-    },
-    secondary: {
-      main: "#ff6077",
-    },
-    green: createColor("#00e396"),
-    purple: createColor("#8b75d7"),
-    yellow: createColor("#febb3b"),
-    lightBlue: createColor("#97bad6"),
-  },
-});
-
-theme.typography.h3 = {
-  fontSize: "1.2rem",
-  "@media (min-width:600px)": {
-    fontSize: "1.5rem",
-  },
-  [theme.breakpoints.up("md")]: {
-    fontSize: "2rem",
-  },
-};
-*/
+import NewGoal from "./Goal/NewGoal";
+import ManageGoals from "./Goal/ManageGoals";
+import ManageInvestments from "./Investments/ManageInvestments";
+import NewInvestment from "./Investments/NewInvestment";
 
 export default function App() {
   return (
@@ -59,6 +32,10 @@ export default function App() {
           />
           <Route exact path="/transactions" element={<AllTransactions />} />
           <Route exact path="/new-transaction" element={<NewTransaction />} />
+          <Route exact path="/goals" element={<ManageGoals />} />
+          <Route exact path="/new-goal" element={<NewGoal />} />
+          <Route exact path="/investments" element={<ManageInvestments />} />
+          <Route exact path="/new-investment" element={<NewInvestment />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>

@@ -3,7 +3,7 @@ const Goal = require("../models/goal");
 
 const router = require("express").Router();
 
-router.get("/all", async (req, res) => {
+router.get("/all", auth, async (req, res) => {
   try {
     const goals = await Goal.findAll({
       where: { user_id: req.user.id },
