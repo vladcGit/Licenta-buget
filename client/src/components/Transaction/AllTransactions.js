@@ -23,6 +23,21 @@ export default function AllTransactions() {
     fetchData();
   }, []);
 
+  const deleteRecord = async (id) => {
+    try {
+      if (!window.confirm("Are you sure you want to delete this record?"))
+        return;
+      await axios.delete(`/api/transaction/${id}`, {
+        headers: { Authorization: localStorage.getItem("token") },
+      });
+
+      const remainingItems = transactions.filter((t) => t.id !== id);
+      setTransactions(remainingItems);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <Grid
       container
@@ -40,7 +55,7 @@ export default function AllTransactions() {
             >
               <EditIcon />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => deleteRecord(transaction.id)}>
               <DeleteIcon />
             </IconButton>
           </MainCard>

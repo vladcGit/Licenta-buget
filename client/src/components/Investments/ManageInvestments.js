@@ -23,6 +23,21 @@ export default function ManageInvestments() {
     fetchData();
   }, []);
 
+  const deleteRecord = async (id) => {
+    try {
+      if (!window.confirm("Are you sure you want to delete this record?"))
+        return;
+      await axios.delete(`/api/investment/${id}`, {
+        headers: { Authorization: localStorage.getItem("token") },
+      });
+
+      const remainingItems = investments.filter((inv) => inv.id !== id);
+      setInvestments(remainingItems);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <Grid
       container
@@ -50,7 +65,7 @@ export default function ManageInvestments() {
             >
               <EditIcon />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => deleteRecord(investment.id)}>
               <DeleteIcon />
             </IconButton>
           </MainCard>

@@ -21,6 +21,22 @@ export default function ManageGoals() {
 
     fetchData();
   }, []);
+
+  const deleteRecord = async (id) => {
+    try {
+      if (!window.confirm("Are you sure you want to delete this record?"))
+        return;
+      await axios.delete(`/api/goal/${id}`, {
+        headers: { Authorization: localStorage.getItem("token") },
+      });
+
+      const remainingGoals = goals.filter((g) => g.id !== id);
+      setGoals(remainingGoals);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <Grid
       container
@@ -46,7 +62,7 @@ export default function ManageGoals() {
             <IconButton onClick={() => navigate(`/edit-goal/${goal.id}`)}>
               <EditIcon />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => deleteRecord(goal.id)}>
               <DeleteIcon />
             </IconButton>
           </MainCard>
