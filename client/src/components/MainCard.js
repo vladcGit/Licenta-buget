@@ -15,6 +15,7 @@ import {
 const headerSX = {
   p: 2.5,
   "& .MuiCardHeader-action": { m: "0px auto", alignSelf: "center" },
+  textAlign: "center",
 };
 
 // ==============================|| CUSTOM - MAIN CARD ||============================== //

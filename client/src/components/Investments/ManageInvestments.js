@@ -1,7 +1,9 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, IconButton } from "@mui/material";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import MainCard from "../MainCard";
 
 export default function ManageInvestments() {
@@ -41,7 +43,17 @@ export default function ManageInvestments() {
       </Grid>
       {investments.map((investment) => (
         <Grid item key={investment.id} xs={12}>
-          <MainCard>{investment.name}</MainCard>
+          <MainCard title={investment.name}>
+            <div style={{ textAlign: "center" }}>{investment.amount}</div>
+            <IconButton
+              onClick={() => navigate(`/edit-investment/${investment.id}`)}
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton>
+              <DeleteIcon />
+            </IconButton>
+          </MainCard>
         </Grid>
       ))}
     </Grid>

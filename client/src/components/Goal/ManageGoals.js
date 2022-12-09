@@ -1,7 +1,9 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, IconButton } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import MainCard from "../MainCard";
 
 export default function ManageGoals() {
@@ -39,7 +41,15 @@ export default function ManageGoals() {
       </Grid>
       {goals.map((goal) => (
         <Grid item key={goal.id} xs={12}>
-          <MainCard>{goal.name}</MainCard>
+          <MainCard title={goal.name}>
+            <div style={{ textAlign: "center" }}>{goal.amount}</div>
+            <IconButton onClick={() => navigate(`/edit-goal/${goal.id}`)}>
+              <EditIcon />
+            </IconButton>
+            <IconButton>
+              <DeleteIcon />
+            </IconButton>
+          </MainCard>
         </Grid>
       ))}
     </Grid>

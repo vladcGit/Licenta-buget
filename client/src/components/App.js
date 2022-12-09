@@ -14,6 +14,8 @@ import ManageGoals from "./Goal/ManageGoals";
 import ManageInvestments from "./Investments/ManageInvestments";
 import NewInvestment from "./Investments/NewInvestment";
 import EditInvestment from "./Investments/EditInvestment";
+import EditGoal from "./Goal/EditGoal";
+import EditTransaction from "./Transaction/EditTransaction";
 
 export default function App() {
   return (
@@ -49,7 +51,15 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
+          <Route
+            exact
+            path="/edit-transaction/:transactionId"
+            element={
+              <ProtectedRoute>
+                <EditTransaction />
+              </ProtectedRoute>
+            }
+          />
           <Route
             exact
             path="/goals"
@@ -65,6 +75,15 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <NewGoal />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            exact
+            path="/edit-goal/:goalId"
+            element={
+              <ProtectedRoute>
+                <EditGoal />
               </ProtectedRoute>
             }
           />

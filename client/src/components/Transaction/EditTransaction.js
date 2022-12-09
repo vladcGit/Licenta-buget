@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TransactionOperations from "./TransactionOperations";
 
-export default function NewTransaction() {
+export default function EditTransaction() {
   const [date, setDate] = useState(new Date());
   const [type, setType] = useState("Outflow");
   const [amount, setAmount] = useState(0.0);
@@ -16,6 +16,7 @@ export default function NewTransaction() {
   const [openModal, setOpenModal] = React.useState(false);
 
   const navigate = useNavigate();
+  const { transactionId } = useParams();
 
   const fetchCategories = async () => {
     try {
@@ -35,7 +36,30 @@ export default function NewTransaction() {
     fetchCategoryCallback();
   }, [fetchCategoryCallback]);
 
-  const createTransaction = async () => {
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await axios.get(`/api/transaction/${transactionId}`, {
+        headers: { Authorization: localStorage.getItem("token") },
+      });
+
+      const userData = res.data;
+
+      setDate(new Date(userData.date));
+      setType(userData.type);
+      setAmount(userData.amount);
+      setDescription(userData.description);
+      setRecurrent(userData.recurrent);
+
+      const category = categories.filter(
+        (c) => c.id === userData.category_id
+      )[0];
+      setCategoryName(category.name);
+    };
+
+    fetchData();
+  }, [transactionId, categories]);
+
+  const editTransaction = async () => {
     try {
       const category_id = Number.parseInt(
         categories.filter((c) => c.name === categoryName)[0].id
@@ -43,8 +67,8 @@ export default function NewTransaction() {
 
       if (amount <= 0) return alert("Amount must be bigger than 0");
 
-      await axios.post(
-        "/api/transaction",
+      await axios.put(
+        `/api/transaction/${transactionId}`,
         {
           date,
           type,
@@ -81,9 +105,9 @@ export default function NewTransaction() {
       setCategoryName={setCategoryName}
       openModal={openModal}
       setOpenModal={setOpenModal}
-      handler={createTransaction}
-      titleText={"Enter a new transaction"}
-      buttonText={"Add"}
+      handler={editTransaction}
+      titleText={"Edit transaction"}
+      buttonText={"Save"}
       fetchCategories={fetchCategoryCallback}
     />
   );
