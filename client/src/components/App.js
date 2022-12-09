@@ -13,6 +13,7 @@ import NewGoal from "./Goal/NewGoal";
 import ManageGoals from "./Goal/ManageGoals";
 import ManageInvestments from "./Investments/ManageInvestments";
 import NewInvestment from "./Investments/NewInvestment";
+import EditInvestment from "./Investments/EditInvestment";
 
 export default function App() {
   return (
@@ -30,13 +31,78 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          <Route exact path="/transactions" element={<AllTransactions />} />
-          <Route exact path="/new-transaction" element={<NewTransaction />} />
-          <Route exact path="/goals" element={<ManageGoals />} />
-          <Route exact path="/new-goal" element={<NewGoal />} />
-          <Route exact path="/investments" element={<ManageInvestments />} />
-          <Route exact path="/new-investment" element={<NewInvestment />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route
+            exact
+            path="/transactions"
+            element={
+              <ProtectedRoute>
+                <AllTransactions />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            exact
+            path="/new-transaction"
+            element={
+              <ProtectedRoute>
+                <NewTransaction />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            exact
+            path="/goals"
+            element={
+              <ProtectedRoute>
+                <ManageGoals />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            exact
+            path="/new-goal"
+            element={
+              <ProtectedRoute>
+                <NewGoal />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            exact
+            path="/investments"
+            element={
+              <ProtectedRoute>
+                <ManageInvestments />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            exact
+            path="/new-investment"
+            element={
+              <ProtectedRoute>
+                <NewInvestment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            exact
+            path="/edit-investment/:investmentId"
+            element={
+              <ProtectedRoute>
+                <EditInvestment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <ProtectedRoute>
+                <NotFoundPage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </ThemeCustomization>

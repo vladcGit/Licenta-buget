@@ -1,4 +1,4 @@
-import { Box, ButtonBase, Typography, Button } from "@mui/material";
+import { Typography, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getUserDetails } from "../../../util";
 import { useNavigate } from "react-router-dom";
@@ -19,17 +19,10 @@ const HeaderContent = () => {
 
   return (
     <>
-      <ButtonBase
-        sx={{
-          p: 0.25,
-          bgcolor: "transparent",
-          borderRadius: 1,
-          "&:hover": { bgcolor: "secondary.lighter" },
-          flexGrow: 1,
-        }}
-      >
-        <Typography variant="subtitle1">Welcome, {user.name}</Typography>
-      </ButtonBase>
+      <Typography variant="subtitle1" sx={{ flexGrow: 1, textAlign: "center" }}>
+        Welcome, {user.name}
+      </Typography>
+
       <Button
         color="inherit"
         onClick={() => {

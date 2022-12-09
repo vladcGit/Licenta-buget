@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import MainCard from "../MainCard";
-import StickyLayout from "../StickyLayout";
 
 export default function ManageGoals() {
   const navigate = useNavigate();
@@ -21,30 +20,28 @@ export default function ManageGoals() {
     fetchData();
   }, []);
   return (
-    <StickyLayout>
-      <Grid
-        container
-        alignItems={"center"}
-        flexDirection="column"
-        spacing={3}
-        minHeight="70vh"
-      >
-        <Grid item>
-          <MainCard
-            sx={{ minWidth: "20vw" }}
-            contentSX={{ display: "flex", justifyContent: "center" }}
-          >
-            <Button color="primary" onClick={() => navigate("/new-goal")}>
-              Add new goal
-            </Button>
-          </MainCard>
-        </Grid>
-        {goals.map((goal) => (
-          <Grid item key={goal.id} xs={12}>
-            <MainCard>{goal.name}</MainCard>
-          </Grid>
-        ))}
+    <Grid
+      container
+      alignItems={"center"}
+      flexDirection="column"
+      spacing={3}
+      minHeight="70vh"
+    >
+      <Grid item>
+        <MainCard
+          sx={{ minWidth: "20vw" }}
+          contentSX={{ display: "flex", justifyContent: "center" }}
+        >
+          <Button color="primary" onClick={() => navigate("/new-goal")}>
+            Add new goal
+          </Button>
+        </MainCard>
       </Grid>
-    </StickyLayout>
+      {goals.map((goal) => (
+        <Grid item key={goal.id} xs={12}>
+          <MainCard>{goal.name}</MainCard>
+        </Grid>
+      ))}
+    </Grid>
   );
 }

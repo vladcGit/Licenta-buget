@@ -18,7 +18,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
-import StickyLayout from "../StickyLayout";
 
 export default function NewTransaction() {
   const [date, setDate] = useState(new Date());
@@ -147,145 +146,139 @@ export default function NewTransaction() {
   };
 
   return (
-    <StickyLayout>
-      <Box
+    <Box
+      sx={{
+        maxWidth: "100vw",
+        display: "flex",
+        justifyContent: "center",
+        mt: "-30px",
+      }}
+    >
+      <Paper
         sx={{
-          maxWidth: "100vw",
-          display: "flex",
-          justifyContent: "center",
-          mt: "-30px",
+          pt: 8,
+          pb: 6,
+          m: 5,
         }}
+        elevation={3}
       >
-        <Paper
-          sx={{
-            pt: 8,
-            pb: 6,
-            m: 5,
-          }}
-          elevation={3}
+        <Grid
+          container
+          flexDirection={"column"}
+          justifyContent="flex-start"
+          alignItems={"center"}
+          spacing={3}
+          width="100%"
+          minWidth="40vw"
         >
-          <Grid
-            container
-            flexDirection={"column"}
-            justifyContent="flex-start"
-            alignItems={"center"}
-            spacing={3}
-            width="100%"
-            minWidth="40vw"
-          >
-            <Grid item xs={12}>
-              <Typography
-                variant="h3"
-                textAlign={"center"}
-                color="text.primary"
-              >
-                Enter a new transaction
-              </Typography>
-            </Grid>
-
-            {
-              <>
-                <Grid item xs={12}>
-                  <TextField
-                    sx={{
-                      width: 250,
-                      "& .MuiInputBase-root": {
-                        height: 300,
-                      },
-                    }}
-                    type="number"
-                    inputProps={{
-                      style: { fontSize: "4rem", textAlign: "center" },
-                      step: 0.01,
-                      min: 0,
-                    }}
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    label="amount"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    sx={{ width: 250 }}
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    label="description"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    sx={{ width: 250 }}
-                    type="date"
-                    value={date.toISOString().split("T")[0]}
-                    onChange={(e) => {
-                      const v = e.target.value;
-                      setDate(v ? new Date(e.target.value) : new Date());
-                    }}
-                    label="date"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={recurrent}
-                        onChange={() => setRecurrent(!recurrent)}
-                        size="medium"
-                      />
-                    }
-                    label="Recurrent?"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    select
-                    sx={{ width: 250 }}
-                    value={type}
-                    label="Type"
-                    onChange={(e) => setType(e.target.value)}
-                  >
-                    <MenuItem value={"Inflow"}>Inflow</MenuItem>
-                    <MenuItem value={"Outflow"}>Outflow</MenuItem>
-                  </TextField>
-                </Grid>
-
-                {categoryName?.length >= 0 && (
-                  <Grid item xs={12} sx={{ display: "flex" }}>
-                    <Autocomplete
-                      sx={{ width: 200 }}
-                      disableClearable
-                      value={categoryName}
-                      onChange={(event, newValue) => {
-                        setCategoryName(newValue);
-                      }}
-                      options={categories.map((c) => c.name)}
-                      renderInput={(params) => (
-                        <TextField {...params} label="Categories" />
-                      )}
-                    />
-                    <IconButton
-                      onClick={() => setOpenModal(true)}
-                      color="primary"
-                    >
-                      <AddIcon />
-                    </IconButton>
-                    <AddCategoryModal />
-                  </Grid>
-                )}
-              </>
-            }
-            <Grid item xs={12}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={createTransaction}
-              >
-                Add
-              </Button>
-            </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h3" textAlign={"center"} color="text.primary">
+              Enter a new transaction
+            </Typography>
           </Grid>
-        </Paper>
-      </Box>
-    </StickyLayout>
+
+          {
+            <>
+              <Grid item xs={12}>
+                <TextField
+                  sx={{
+                    width: 250,
+                    "& .MuiInputBase-root": {
+                      height: 300,
+                    },
+                  }}
+                  type="number"
+                  inputProps={{
+                    style: { fontSize: "4rem", textAlign: "center" },
+                    step: 0.01,
+                    min: 0,
+                  }}
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  label="amount"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  sx={{ width: 250 }}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  label="description"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  sx={{ width: 250 }}
+                  type="date"
+                  value={date.toISOString().split("T")[0]}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setDate(v ? new Date(e.target.value) : new Date());
+                  }}
+                  label="date"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={recurrent}
+                      onChange={() => setRecurrent(!recurrent)}
+                      size="medium"
+                    />
+                  }
+                  label="Recurrent?"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  select
+                  sx={{ width: 250 }}
+                  value={type}
+                  label="Type"
+                  onChange={(e) => setType(e.target.value)}
+                >
+                  <MenuItem value={"Inflow"}>Inflow</MenuItem>
+                  <MenuItem value={"Outflow"}>Outflow</MenuItem>
+                </TextField>
+              </Grid>
+
+              {categoryName?.length >= 0 && (
+                <Grid item xs={12} sx={{ display: "flex" }}>
+                  <Autocomplete
+                    sx={{ width: 200 }}
+                    disableClearable
+                    value={categoryName}
+                    onChange={(event, newValue) => {
+                      setCategoryName(newValue);
+                    }}
+                    options={categories.map((c) => c.name)}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Categories" />
+                    )}
+                  />
+                  <IconButton
+                    onClick={() => setOpenModal(true)}
+                    color="primary"
+                  >
+                    <AddIcon />
+                  </IconButton>
+                  <AddCategoryModal />
+                </Grid>
+              )}
+            </>
+          }
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={createTransaction}
+            >
+              Add
+            </Button>
+          </Grid>
+        </Grid>
+      </Paper>
+    </Box>
   );
 }

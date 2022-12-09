@@ -1,6 +1,8 @@
+import { Grid } from "@mui/material";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import StickyLayout from "../StickyLayout";
+
+import MainCard from "../MainCard";
 
 export default function AllTransactions() {
   const [transactions, setTransactions] = useState([]);
@@ -18,10 +20,18 @@ export default function AllTransactions() {
   }, []);
 
   return (
-    <StickyLayout>
-      {transactions.map((t) => (
-        <div key={t.id}>{t.amount}</div>
+    <Grid
+      container
+      alignItems={"center"}
+      flexDirection="column"
+      spacing={3}
+      minHeight="70vh"
+    >
+      {transactions.map((transaction) => (
+        <Grid item key={transaction.id} xs={12}>
+          <MainCard>{transaction.amount}</MainCard>
+        </Grid>
       ))}
-    </StickyLayout>
+    </Grid>
   );
 }
