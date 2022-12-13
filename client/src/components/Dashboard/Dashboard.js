@@ -18,13 +18,13 @@ import {
 } from "@mui/material";
 
 // project import
-import OrdersTable from "./OrdersTable";
-import IncomeAreaChart from "./IncomeAreaChart";
-import MonthlyBarChart from "./MonthlyBarChart";
-import ReportAreaChart from "./ReportAreaChart";
-import SalesColumnChart from "./SalesColumnChart";
-import MainCard from "../../MainCard";
-import AnalyticEcommerce from "./AnalyticEcommerce";
+import OrdersTable from "./Charts/OrdersTable";
+import IncomeAreaChart from "./Charts/IncomeAreaChart";
+import MonthlyBarChart from "./Charts/MonthlyBarChart";
+import ReportAreaChart from "./Charts/ReportAreaChart";
+import SalesColumnChart from "./Charts/SalesColumnChart";
+import MainCard from "../MainCard";
+import AnalyticEcommerce from "./Charts/AnalyticEcommerce";
 
 // assets
 import {

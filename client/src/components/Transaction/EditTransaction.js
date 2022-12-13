@@ -53,7 +53,7 @@ export default function EditTransaction() {
       const category = categories.filter(
         (c) => c.id === userData.category_id
       )[0];
-      setCategoryName(category.name);
+      setCategoryName(category?.name);
     };
 
     fetchData();

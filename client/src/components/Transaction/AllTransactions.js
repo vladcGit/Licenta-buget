@@ -48,7 +48,7 @@ export default function AllTransactions() {
     >
       {transactions.map((transaction) => (
         <Grid item key={transaction.id} xs={12}>
-          <MainCard title={transaction.name}>
+          <MainCard title={transaction.description}>
             <div style={{ textAlign: "center" }}>{transaction.amount}</div>
             <IconButton
               onClick={() => navigate(`/edit-transaction/${transaction.id}`)}

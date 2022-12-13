@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import NewTransaction from "./Transaction/NewTransaction";
 import SignIn from "./Authentication/Signin";
-import Dashboard from "./Dashboard";
+import Dashboard from "./Dashboard/Dashboard";
 import ThemeCustomization from "../themes/ThemeCustomization";
 import SignUp from "./Authentication/Signup";
 import ProtectedRoute from "./ProtectedRoute";
@@ -27,11 +27,7 @@ export default function App() {
           <Route
             exact
             path="/"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
+            element={<ProtectedRoute>{/* <Dashboard /> */}</ProtectedRoute>}
           />
           <Route
             exact
