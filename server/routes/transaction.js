@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const auth = require("../middleware/auth");
 const Transaction = require("../models/transaction");
 
@@ -5,9 +6,47 @@ const router = require("express").Router();
 
 router.get("/all", auth, async (req, res) => {
   try {
-    const transactions = await Transaction.findAll({
-      where: { user_id: req.user.id },
+    let { recurrent, category, date, minAmount, maxAmount, type } = req.query;
+
+    if (minAmount === undefined) minAmount = Number.MIN_SAFE_INTEGER;
+    else minAmount = Number.parseFloat(minAmount);
+    if (maxAmount === undefined) maxAmount = Number.MAX_SAFE_INTEGER;
+    else maxAmount = Number.parseFloat(maxAmount);
+
+    if (recurrent === "false") recurrent = false;
+    if (recurrent === "true") recurrent = true;
+    if (category) category = Number.parseInt(category);
+    if (date) date = new Date(date);
+
+    let transactions = await Transaction.findAll({
+      where: {
+        user_id: req.user.id,
+        amount: {
+          [Op.between]: [minAmount, maxAmount],
+        },
+      },
     });
+
+    if (recurrent !== undefined)
+      transactions = transactions.filter(
+        (t) => t.dataValues.recurrent == recurrent
+      );
+    if (category)
+      transactions = transactions.filter(
+        (t) => t.dataValues.category_id === category
+      );
+    if (type)
+      transactions = transactions.filter((t) => t.dataValues.type === type);
+    if (date)
+      transactions = transactions.filter((t) => {
+        const dbDate = new Date(t.dataValues.date);
+        return (
+          dbDate.getDate() === date.getDate() &&
+          dbDate.getMonth() === date.getMonth() &&
+          dbDate.getFullYear() === date.getFullYear()
+        );
+      });
+
     res.status(200).json(transactions);
   } catch (e) {
     console.log(e);

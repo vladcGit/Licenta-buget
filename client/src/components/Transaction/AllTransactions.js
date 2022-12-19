@@ -1,4 +1,12 @@
-import { Autocomplete, Grid, IconButton, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Checkbox,
+  Divider,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  TextField,
+} from "@mui/material";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,8 +20,15 @@ import MainCard from "../MainCard";
 
 export default function AllTransactions() {
   const [transactions, setTransactions] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [allCategories, setAllCategories] = useState([]);
   const [categoryName, setCategoryName] = useState("All");
+  const [recurrent, setRecurrent] = useState(true);
+  const [nonrecurrent, setNonrecurrent] = useState(true);
+  const [typeInflow, setTypeInflow] = useState(true);
+  const [typeOutflow, setTypeOutflow] = useState(true);
+  const [date, setDate] = useState(undefined);
+  const [maxAmount, setMaxAmount] = useState(undefined);
+  const [minAmount, setMinAmount] = useState(undefined);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,12 +45,60 @@ export default function AllTransactions() {
 
       const cats = resCategories.data;
       cats.unshift({ id: -1, name: "All" });
-      setCategories(cats);
+      setAllCategories(cats);
       console.log(resCategories.data);
     };
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const category =
+        categoryName === "All"
+          ? null
+          : allCategories.filter((c) => c.name === categoryName)[0].id;
+
+      const res = await axios.get("/api/transaction/all", {
+        headers: { Authorization: localStorage.getItem("token") },
+        params: {
+          category,
+          date,
+          recurrent:
+            recurrent && nonrecurrent
+              ? undefined
+              : recurrent && !nonrecurrent
+              ? true
+              : !recurrent && nonrecurrent
+              ? false
+              : "both",
+          type:
+            typeInflow && typeOutflow
+              ? undefined
+              : typeInflow && !typeOutflow
+              ? "Inflow"
+              : !typeInflow && typeOutflow
+              ? "Outflow"
+              : "Both",
+          maxAmount,
+          minAmount,
+        },
+      });
+      setTransactions(res.data);
+    };
+
+    fetchData();
+  }, [
+    recurrent,
+    nonrecurrent,
+    categoryName,
+    allCategories,
+    date,
+    typeInflow,
+    typeOutflow,
+    maxAmount,
+    minAmount,
+  ]);
 
   const deleteRecord = async (id) => {
     try {
@@ -53,7 +116,7 @@ export default function AllTransactions() {
   };
 
   const formatDate = (date) => {
-    date = new Date();
+    date = new Date(date);
     const yyyy = date.getFullYear();
     let mm = date.getMonth() + 1; // Months start at 0!
     let dd = date.getDate();
@@ -66,7 +129,13 @@ export default function AllTransactions() {
   return (
     <Grid container justifyContent={"center"} spacing={3} minHeight="70vh">
       <Grid item xs={12}>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+          }}
+        >
           <Autocomplete
             sx={{ width: 200 }}
             disableClearable
@@ -74,15 +143,88 @@ export default function AllTransactions() {
             onChange={(event, newValue) => {
               setCategoryName(newValue);
             }}
-            options={categories.map((c) => c.name)}
+            options={allCategories.map((c) => c.name)}
             renderInput={(params) => (
               <TextField {...params} label="Categories" />
             )}
           />
+          <Divider orientation="vertical" flexItem />
+          <div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={recurrent}
+                  onChange={() => setRecurrent(!recurrent)}
+                  size="medium"
+                />
+              }
+              label="Recurrent"
+            />
+            <br />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={nonrecurrent}
+                  onChange={() => setNonrecurrent(!nonrecurrent)}
+                  size="medium"
+                />
+              }
+              label="Non Recurrent"
+            />
+          </div>
+          <Divider orientation="vertical" flexItem />
+          <div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={typeInflow}
+                  onChange={() => setTypeInflow(!typeInflow)}
+                  size="medium"
+                />
+              }
+              label="Inflow"
+            />
+            <br />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={typeOutflow}
+                  onChange={() => setTypeOutflow(!typeOutflow)}
+                  size="medium"
+                />
+              }
+              label="Outflow"
+            />
+          </div>
+          <Divider orientation="vertical" flexItem />
+          <TextField
+            type="date"
+            value={undefined && date?.toISOString().split("T")[0]}
+            onChange={(e) => {
+              const v = e.target.value;
+              setDate(v ? new Date(e.target.value) : undefined);
+            }}
+            label="date"
+            InputLabelProps={{ shrink: true }}
+          />
+          <Divider orientation="vertical" flexItem />
+          <TextField
+            type="number"
+            value={undefined}
+            onChange={(e) => setMinAmount(e.target.value || undefined)}
+            label="Min amount"
+          />
+          <TextField
+            type="number"
+            value={undefined}
+            onChange={(e) => setMaxAmount(e.target.value || undefined)}
+            label="Max amount"
+          />
         </div>
+        <Divider flexItem sx={{ height: "10px" }} />
       </Grid>
       {transactions.length > 0 &&
-        categories.length > 0 &&
+        allCategories.length > 0 &&
         transactions.map((transaction) => (
           <Grid item key={transaction.id} xs={3}>
             <MainCard title={transaction.description}>
@@ -125,8 +267,9 @@ export default function AllTransactions() {
               </div>
               <h3 style={{ textAlign: "center" }}>
                 {
-                  categories.filter((c) => c.id === transaction.category_id)[0]
-                    .name
+                  allCategories.filter(
+                    (c) => c.id === transaction.category_id
+                  )[0].name
                 }
               </h3>
               <div
