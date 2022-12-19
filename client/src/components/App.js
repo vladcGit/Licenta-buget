@@ -27,7 +27,7 @@ export default function App() {
           <Route
             exact
             path="/"
-            element={<ProtectedRoute>{/* <Dashboard /> */}</ProtectedRoute>}
+            element={<ProtectedRoute>{<Dashboard />}</ProtectedRoute>}
           />
           <Route
             exact
