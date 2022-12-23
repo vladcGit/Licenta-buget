@@ -7,6 +7,88 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import MainCard from "../MainCard";
 import ReactApexChart from "react-apexcharts";
 
+const chartOptions = {
+  chart: {
+    height: 350,
+    type: "radialBar",
+    toolbar: {
+      show: true,
+      tools: {
+        download: false,
+      },
+    },
+  },
+  plotOptions: {
+    radialBar: {
+      startAngle: -135,
+      endAngle: 225,
+      hollow: {
+        margin: 0,
+        size: "70%",
+        background: "#fff",
+        image: undefined,
+        imageOffsetX: 0,
+        imageOffsetY: 0,
+        position: "front",
+        dropShadow: {
+          enabled: true,
+          top: 3,
+          left: 0,
+          blur: 4,
+          opacity: 0.24,
+        },
+      },
+      track: {
+        background: "#fff",
+        strokeWidth: "67%",
+        margin: 0, // margin is in pixels
+        dropShadow: {
+          enabled: true,
+          top: -3,
+          left: 0,
+          blur: 4,
+          opacity: 0.35,
+        },
+      },
+
+      dataLabels: {
+        show: true,
+        name: {
+          offsetY: -10,
+          show: true,
+          color: "#888",
+          fontSize: "17px",
+        },
+        value: {
+          formatter: function (val) {
+            return `${parseInt(val)}%`;
+          },
+          color: "#111",
+          fontSize: "36px",
+          show: true,
+        },
+      },
+    },
+  },
+  fill: {
+    type: "gradient",
+    gradient: {
+      shade: "dark",
+      type: "horizontal",
+      shadeIntensity: 0.5,
+      gradientToColors: ["#5bb5f2"],
+      inverseColors: true,
+      opacityFrom: 1,
+      opacityTo: 1,
+      stops: [0, 100],
+    },
+  },
+  stroke: {
+    lineCap: "round",
+  },
+  labels: ["Progress"],
+};
+
 export default function ManageGoals() {
   const navigate = useNavigate();
   const [goals, setGoals] = useState([]);
@@ -96,12 +178,7 @@ export default function ManageGoals() {
               <ReactApexChart
                 type="radialBar"
                 series={[((goalValues[index] / goal.amount) * 100).toFixed(1)]}
-                options={{
-                  labels: ["Progress"],
-                  stroke: {
-                    lineCap: "round",
-                  },
-                }}
+                options={chartOptions}
               />
             </MainCard>
           </Grid>

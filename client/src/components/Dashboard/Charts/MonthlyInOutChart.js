@@ -71,7 +71,7 @@ const columnChartOptions = {
 const MonthlyInOutChart = ({ series, labels }) => {
   const theme = useTheme();
 
-  const { primary, secondary } = theme.palette.text;
+  const { secondary } = theme.palette.text;
   const line = theme.palette.divider;
 
   const warning = theme.palette.warning.main;

@@ -27,12 +27,12 @@ export default function App() {
           <Route exact path="/signup" element={<SignUp />} />
           <Route
             exact
-            path="/"
+            path="/dashboard"
             element={<ProtectedRoute>{<Dashboard />}</ProtectedRoute>}
           />
           <Route
             exact
-            path="/my-dashboard"
+            path="/"
             element={<ProtectedRoute>{<MyDashboard />}</ProtectedRoute>}
           />
           <Route

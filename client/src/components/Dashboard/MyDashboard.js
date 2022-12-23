@@ -265,11 +265,10 @@ export default function MyDashboard() {
           <WeeklyChart series={seriesWeekly} />
         </MainCard>
       </Grid>
-      {/* row 4 */}
       <Grid item xs={12} md={7} lg={8}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
-            <Typography variant="h5">Sales Report</Typography>
+            <Typography variant="h5">Transactions Report</Typography>
           </Grid>
         </Grid>
         {seriesMonthly && (

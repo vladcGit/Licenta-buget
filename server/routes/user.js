@@ -3,9 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const auth = require("../middleware/auth");
 const User = require("../models/user");
-const Goal = require("../models/goal");
 const Transaction = require("../models/transaction");
-const Investment = require("../models/investment");
 const { Op } = require("sequelize");
 
 require("dotenv").config();
@@ -145,21 +143,6 @@ router.get("/monthly-income", auth, async (req, res) => {
     res.status(200).json({
       amount: sumOfReccurentTransactions + sumOfNonReccurentTransactions,
     });
-  } catch (e) {
-    console.log(e);
-    return res.status(500).json(e);
-  }
-});
-
-router.get("/:id", auth, async (req, res) => {
-  try {
-    if (!req.header("Authorization")) return;
-    const user = await User.findByPk(req.params.id, {
-      include: [Goal, Transaction, Investment],
-      attributes: { exclude: ["parola"] },
-    });
-    if (!user) return res.status(400).json({ error: "Does not exist" });
-    else return res.status(200).json(user);
   } catch (e) {
     console.log(e);
     return res.status(500).json(e);

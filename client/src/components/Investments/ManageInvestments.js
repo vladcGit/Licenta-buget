@@ -81,6 +81,13 @@ export default function ManageInvestments() {
                   chart: {
                     height: 350,
                     type: "line",
+
+                    toolbar: {
+                      show: false,
+                    },
+                    zoom: {
+                      enabled: false,
+                    },
                   },
                   forecastDataPoints: {
                     count: 3,
@@ -93,7 +100,8 @@ export default function ManageInvestments() {
                     type: "gradient",
                     gradient: {
                       shade: "dark",
-                      gradientToColors: ["#FDD835"],
+                      // gradientToColors: ["#FDD835", ],
+                      gradientToColors: ["#E91E63"],
                       shadeIntensity: 1,
                       type: "horizontal",
                       opacityFrom: 1,
@@ -107,14 +115,6 @@ export default function ManageInvestments() {
                     style: {
                       fontSize: "16px",
                       color: "#666",
-                    },
-                  },
-                  chart: {
-                    toolbar: {
-                      show: false,
-                    },
-                    zoom: {
-                      enabled: false,
                     },
                   },
                 }}
