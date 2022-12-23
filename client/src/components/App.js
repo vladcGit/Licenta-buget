@@ -16,6 +16,7 @@ import NewInvestment from "./Investments/NewInvestment";
 import EditInvestment from "./Investments/EditInvestment";
 import EditGoal from "./Goal/EditGoal";
 import EditTransaction from "./Transaction/EditTransaction";
+import MyDashboard from "./Dashboard/MyDashboard";
 
 export default function App() {
   return (
@@ -28,6 +29,11 @@ export default function App() {
             exact
             path="/"
             element={<ProtectedRoute>{<Dashboard />}</ProtectedRoute>}
+          />
+          <Route
+            exact
+            path="/my-dashboard"
+            element={<ProtectedRoute>{<MyDashboard />}</ProtectedRoute>}
           />
           <Route
             exact

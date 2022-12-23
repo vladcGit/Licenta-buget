@@ -54,6 +54,29 @@ router.get("/all", auth, async (req, res) => {
   }
 });
 
+router.get("/this-month", auth, async (req, res) => {
+  try {
+    let { date } = req.body;
+
+    if (date) date = new Date(date);
+    else date = new Date();
+
+    const transactions = await Transaction.findAll({
+      where: { user_id: req.user.id },
+      raw: true,
+    });
+
+    const thisMonth = transactions.filter(
+      (t) => new Date(t.date).getMonth() === date.getMonth()
+    );
+
+    res.status(200).json(thisMonth);
+  } catch (e) {
+    console.log(e);
+    res.status(500).json(e);
+  }
+});
+
 router.get("/balance", auth, async (req, res) => {
   try {
     const transactions = await Transaction.findAll({
