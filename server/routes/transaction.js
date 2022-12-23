@@ -54,9 +54,9 @@ router.get("/all", auth, async (req, res) => {
   }
 });
 
-router.get("/this-month", auth, async (req, res) => {
+router.get("/monthly", auth, async (req, res) => {
   try {
-    let { date } = req.body;
+    let { date } = req.query;
 
     if (date) date = new Date(date);
     else date = new Date();
@@ -66,11 +66,52 @@ router.get("/this-month", auth, async (req, res) => {
       raw: true,
     });
 
-    const thisMonth = transactions.filter(
-      (t) => new Date(t.date).getMonth() === date.getMonth()
-    );
+    const predicate = (t) =>
+      new Date(t.date).getMonth() === date.getMonth() ||
+      (t.recurrent && new Date(t.date) <= date);
 
-    res.status(200).json(thisMonth);
+    const thisMonth = transactions.filter(predicate);
+
+    const inflow = thisMonth.filter((t) => t.type === "Inflow");
+    const outflow = thisMonth.filter((t) => t.type === "Outflow");
+
+    res.status(200).json({ inflow, outflow, date });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json(e);
+  }
+});
+
+router.get("/last-week", auth, async (req, res) => {
+  try {
+    const { day, month, year } = req.query;
+    if (!day || !month || !year)
+      return res.status(400).json({ error: "Date provided is invalid" });
+
+    const result = [];
+
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(year, month, day - i);
+      const transactions = await Transaction.findAll({
+        where: { type: "Outflow" },
+      });
+
+      const filtered = transactions.filter((t) => {
+        const dbDate = new Date(t.date);
+        return (
+          dbDate.getDate() === date.getDate() &&
+          dbDate.getMonth() === date.getMonth() &&
+          dbDate.getFullYear() === date.getFullYear()
+        );
+      });
+
+      const sumOfSpendings = filtered
+        .map((t) => t.dataValues.amount)
+        .reduce((partialSum, a) => partialSum + a, 0);
+      result.push(sumOfSpendings);
+    }
+
+    res.status(200).json(result);
   } catch (e) {
     console.log(e);
     res.status(500).json(e);

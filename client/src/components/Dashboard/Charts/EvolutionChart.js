@@ -1,11 +1,8 @@
-import { useState, useEffect } from "react";
-
 // material-ui
 import { useTheme } from "@mui/material/styles";
 
 // third-party
 import ReactApexChart from "react-apexcharts";
-import axios from "axios";
 
 // chart options
 const areaChartOptions = {
@@ -20,8 +17,8 @@ const areaChartOptions = {
     },
   },
   dataLabels: {
-    // enabled: false,
-    enabled: true,
+    enabled: false,
+    // enabled: true,
   },
   stroke: {
     curve: "smooth",
@@ -32,7 +29,7 @@ const areaChartOptions = {
   },
 };
 
-const EvolutionChart = () => {
+const EvolutionChart = ({ series }) => {
   const theme = useTheme();
 
   const { primary, secondary } = theme.palette.text;
@@ -94,45 +91,6 @@ const EvolutionChart = () => {
       theme: "light",
     },
   };
-
-  const [series, setSeries] = useState([
-    {
-      name: "Net Worth",
-      data: [76, 85, 101, 98, 87, 105, 91, 114, 94, 86, 115, 35],
-    },
-  ]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const promissesArray = [];
-
-      for (let month = 0; month < 12; month++) {
-        const year = new Date().getFullYear();
-
-        const request = axios.post(
-          "/api/user/total-balance",
-          {
-            date: new Date(year, month + 1, 0),
-          },
-          { headers: { Authorization: localStorage.getItem("token") } }
-        );
-
-        promissesArray.push(request);
-      }
-
-      const resolvedPromises = await Promise.all(promissesArray);
-      const values = resolvedPromises.map((p) => p.data.balance);
-      console.log(values);
-      setSeries([
-        {
-          name: "Net Worth",
-          data: values,
-        },
-      ]);
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <ReactApexChart

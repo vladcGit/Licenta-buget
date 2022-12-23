@@ -1,30 +1,155 @@
-import { Box, Chip, Divider, Grid, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Chip,
+  CircularProgress,
+  Divider,
+  Grid,
+  Stack,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import MainCard from "../MainCard";
 import AnalyticsCard from "./Charts/AnalyticsCard";
 import EvolutionChart from "./Charts/EvolutionChart";
+import MonthlyInOutChart from "./Charts/MonthlyInOutChart";
+import WeeklyChart from "./Charts/WeeklyChart";
 
 export default function MyDashboard() {
-  const [transactions, setTransactions] = useState([]);
-  const [income, setIncome] = useState(0);
+  const [income, setIncome] = useState(null);
+  const [seriesEvolution, setSeriesEvolution] = useState([
+    { data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+  ]);
+  const [seriesWeekly, setSeriesWeekly] = useState([
+    { data: [0, 0, 0, 0, 0, 0, 0] },
+  ]);
+  const [seriesMonthly, setSeriesMonthly] = useState(null);
+  const [last6Months, setLast6Months] = useState(null);
 
+  // income and monthly transactions
   useEffect(() => {
     const fetchData = async () => {
       const res = await axios.get("/api/user/monthly-income", {
         headers: { Authorization: localStorage.getItem("token") },
       });
       setIncome(res.data.amount);
-
-      const resTransactions = await axios.get("/api/transaction/this-month", {
-        headers: { Authorization: localStorage.getItem("token") },
-      });
-
-      setTransactions(resTransactions.data);
     };
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = {
+        inflow: { name: "Inflow", data: [] },
+        outflow: { name: "Outflow", data: [] },
+        dates: [],
+      };
+
+      for (let i = 5; i >= 0; i--) {
+        const date = new Date();
+
+        const resTransactions = await axios.get("/api/transaction/monthly", {
+          headers: { Authorization: localStorage.getItem("token") },
+          params: {
+            date: new Date(date.getFullYear(), date.getMonth() - i, 1),
+          },
+        });
+
+        const data = resTransactions.data;
+
+        result.dates.push(data.date);
+
+        const sumOfInflows = data.inflow
+          .map((t) => t.amount)
+          .reduce((partialSum, a) => partialSum + a, 0);
+        result.inflow.data.push(sumOfInflows);
+
+        const sumOfOutflows = data.outflow
+          .map((t) => t.amount)
+          .reduce((partialSum, a) => partialSum + a, 0);
+        result.outflow.data.push(sumOfOutflows);
+      }
+
+      setLast6Months(result.dates);
+      setSeriesMonthly([{ ...result.inflow }, { ...result.outflow }]);
+    };
+
+    fetchData();
+  }, []);
+
+  // evolution
+  useEffect(() => {
+    const fetchData = async () => {
+      const promissesArray = [];
+
+      for (let month = 0; month < 12; month++) {
+        const year = new Date().getFullYear();
+
+        const request = axios.post(
+          "/api/user/total-balance",
+          {
+            date: new Date(year, month + 1, 0),
+          },
+          { headers: { Authorization: localStorage.getItem("token") } }
+        );
+
+        promissesArray.push(request);
+      }
+
+      const resolvedPromises = await Promise.all(promissesArray);
+      const values = resolvedPromises.map((p) => p.data.balance);
+      setSeriesEvolution([
+        {
+          name: "Net Worth",
+          data: values,
+        },
+      ]);
+    };
+
+    fetchData();
+  }, []);
+
+  // weekly
+  useEffect(() => {
+    const fetchDay = async () => {
+      const previousMonday = new Date();
+      previousMonday.setDate(new Date().getDate() - new Date().getDay());
+      const res = await axios.get("/api/transaction/last-week", {
+        params: {
+          day: previousMonday.getDate(),
+          month: previousMonday.getMonth(),
+          year: previousMonday.getFullYear(),
+        },
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      });
+
+      setSeriesWeekly([
+        {
+          name: "Spendings",
+          data: res.data,
+        },
+      ]);
+    };
+    fetchDay();
+  }, []);
+
+  if (!income)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          width: "100%",
+          height: "40vh",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress size={"6rem"} />
+      </Box>
+    );
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
@@ -106,13 +231,71 @@ export default function MyDashboard() {
       <Grid item xs={12}>
         <Divider flexItem />
       </Grid>
+
       <Grid item xs={12} md={7} lg={8}>
         <Typography variant="h5">Net worth</Typography>
         <MainCard content={false} sx={{ mt: 1.5 }}>
           <Box sx={{ pt: 1, pr: 2 }}>
-            <EvolutionChart />
+            <EvolutionChart series={seriesEvolution} />
           </Box>
         </MainCard>
+      </Grid>
+      <Grid item xs={12} md={5} lg={4}>
+        <Grid container alignItems="center" justifyContent="space-between">
+          <Grid item>
+            <Typography variant="h5">Spending Overview</Typography>
+          </Grid>
+          <Grid item />
+        </Grid>
+        <MainCard sx={{ mt: 1.5 }} content={false}>
+          <Box sx={{ p: 3, pb: 0 }}>
+            <Stack spacing={2}>
+              <Typography variant="h6" color="textSecondary">
+                This Week Spendings
+              </Typography>
+              {console.log(seriesWeekly)}
+              <Typography variant="h3">
+                {seriesWeekly.map((s) =>
+                  s.data.reduce((partialSum, a) => partialSum + a, 0)
+                )}{" "}
+                lei
+              </Typography>
+            </Stack>
+          </Box>
+          <WeeklyChart series={seriesWeekly} />
+        </MainCard>
+      </Grid>
+      {/* row 4 */}
+      <Grid item xs={12} md={7} lg={8}>
+        <Grid container alignItems="center" justifyContent="space-between">
+          <Grid item>
+            <Typography variant="h5">Sales Report</Typography>
+          </Grid>
+        </Grid>
+        {seriesMonthly && (
+          <MainCard sx={{ mt: 1.75 }}>
+            <Stack spacing={1.5} sx={{ mb: -12 }}>
+              <Typography variant="h6" color="secondary">
+                Net Profit
+              </Typography>
+              <Typography variant="h4">
+                {seriesMonthly[0].data.reduce(
+                  (partialSum, a) => partialSum + a,
+                  0
+                ) -
+                  seriesMonthly[1].data.reduce(
+                    (partialSum, a) => partialSum + a,
+                    0
+                  )}{" "}
+                lei
+              </Typography>
+              {console.log(seriesMonthly)}
+            </Stack>
+            {last6Months && seriesMonthly && (
+              <MonthlyInOutChart series={seriesMonthly} labels={last6Months} />
+            )}
+          </MainCard>
+        )}
       </Grid>
     </Grid>
   );
