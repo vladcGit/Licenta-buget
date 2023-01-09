@@ -13,6 +13,7 @@ import MainCard from "../MainCard";
 import AnalyticsCard from "./Charts/AnalyticsCard";
 import EvolutionChart from "./Charts/EvolutionChart";
 import MonthlyInOutChart from "./Charts/MonthlyInOutChart";
+import TransactionsTable from "./Charts/TransactionsTable";
 import WeeklyChart from "./Charts/WeeklyChart";
 
 export default function MyDashboard() {
@@ -25,8 +26,10 @@ export default function MyDashboard() {
   ]);
   const [seriesMonthly, setSeriesMonthly] = useState(null);
   const [last6Months, setLast6Months] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [biggestTransactions, setBiggestTransactions] = useState([]);
 
-  // income and monthly transactions
+  // income
   useEffect(() => {
     const fetchData = async () => {
       const res = await axios.get("/api/user/monthly-income", {
@@ -38,6 +41,7 @@ export default function MyDashboard() {
     fetchData();
   }, []);
 
+  // monthly transactions
   useEffect(() => {
     const fetchData = async () => {
       const result = {
@@ -135,6 +139,45 @@ export default function MyDashboard() {
     };
     fetchDay();
   }, []);
+
+  // categories
+  useEffect(() => {
+    const fetchData = async () => {
+      const resCategories = await axios.get("/api/category/all", {
+        headers: { Authorization: localStorage.getItem("token") },
+      });
+
+      setCategories(resCategories.data);
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (categories.length === 0) return;
+      const res = await axios.get("/api/transaction/all", {
+        headers: { Authorization: localStorage.getItem("token") },
+      });
+
+      console.log(res.data);
+
+      const trans = res.data
+        .sort((a, b) => (a.amount > b.amount ? -1 : 1))
+        .slice(0, 10);
+
+      trans.forEach((t) => {
+        const catId = t.category_id;
+        const catName = categories.filter((c) => c.id === catId)[0].name;
+        t.categoryName = catName;
+      });
+      console.log(trans);
+
+      setBiggestTransactions(trans);
+    };
+
+    fetchData();
+  }, [categories]);
 
   if (!income)
     return (
@@ -265,7 +308,7 @@ export default function MyDashboard() {
           <WeeklyChart series={seriesWeekly} />
         </MainCard>
       </Grid>
-      <Grid item xs={12} md={7} lg={8}>
+      <Grid item xs={12}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
             <Typography variant="h5">Transactions Report</Typography>
@@ -295,6 +338,17 @@ export default function MyDashboard() {
             )}
           </MainCard>
         )}
+      </Grid>
+      <Grid item xs={12} md={7} lg={8}>
+        <Grid container alignItems="center" justifyContent="space-between">
+          <Grid item>
+            <Typography variant="h5">Biggest Outflow Transactions</Typography>
+          </Grid>
+          <Grid item />
+        </Grid>
+        <MainCard sx={{ mt: 2 }} content={false}>
+          <TransactionsTable transactions={biggestTransactions} />
+        </MainCard>
       </Grid>
     </Grid>
   );
