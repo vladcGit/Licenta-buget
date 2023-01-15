@@ -94,6 +94,7 @@ export default function ManageGoals() {
   const [goals, setGoals] = useState([]);
   const [balance, setBalance] = useState(0);
   const [goalValues, setGoalValues] = useState([]);
+  const [recurrentOutflows, setRecurrentOutflows] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -121,6 +122,17 @@ export default function ManageGoals() {
         }
       }
       setGoalValues(values);
+
+      const transactionsRes = await axios.get("/api/transaction/all", {
+        params: { type: "Outflow", recurrent: true },
+        headers: { Authorization: localStorage.getItem("token") },
+      });
+
+      const recurrentSum = transactionsRes.data
+        .map((t) => t.amount)
+        .reduce((partialSum, a) => partialSum + a, 0);
+
+      setRecurrentOutflows(recurrentSum);
     };
 
     fetchData();
@@ -179,6 +191,13 @@ export default function ManageGoals() {
                 series={[((goalValues[index] / goal.amount) * 100).toFixed(1)]}
                 options={chartOptions}
               />
+              {goalValues[index] / goal.amount < 1 && recurrentOutflows > 0 && (
+                <h5 style={{ textAlign: "center" }}>
+                  If you cancel all your recurrent transactions you can save{" "}
+                  {((recurrentOutflows / goal.amount) * 100).toFixed(2)}% of
+                  this goal in one month
+                </h5>
+              )}
             </MainCard>
           </Grid>
         ))
