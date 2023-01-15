@@ -35,7 +35,7 @@ export default function MyDashboard() {
       const res = await axios.get("/api/user/monthly-income", {
         headers: { Authorization: localStorage.getItem("token") },
       });
-      setIncome(res.data.amount);
+      setIncome(res.data.amount || 0);
     };
 
     fetchData();
@@ -190,7 +190,11 @@ export default function MyDashboard() {
           alignItems: "center",
         }}
       >
-        <CircularProgress size={"6rem"} />
+        {income === 0 ? (
+          <h3>Please provide a value for your income and transactions</h3>
+        ) : (
+          <CircularProgress size={"6rem"} />
+        )}
       </Box>
     );
 
@@ -271,7 +275,7 @@ export default function MyDashboard() {
           </Typography>
         </Grid>
       )}
-      <Grid item xs={12}>
+      <Grid item xs={12} sx={{ marginTop: "10px" }}>
         <Divider flexItem />
       </Grid>
 

@@ -13,6 +13,6 @@ const port = process.env.PORT || 5000;
 
 app.listen(port, async () => {
   await sequelize.authenticate();
-  // await sequelize.sync({ force: true });
+  await sequelize.sync();
   console.log(`Server started on port ${port}`);
 });

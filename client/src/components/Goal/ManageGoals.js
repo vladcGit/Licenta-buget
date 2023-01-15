@@ -142,7 +142,7 @@ export default function ManageGoals() {
   };
 
   return (
-    <Grid container alignItems={"center"} spacing={3} minHeight="70vh">
+    <Grid container alignItems={"center"} spacing={3}>
       <Grid item xs={12}>
         <MainCard
           sx={{ minWidth: "20vw" }}
@@ -153,8 +153,7 @@ export default function ManageGoals() {
           </Button>
         </MainCard>
       </Grid>
-      {balance &&
-        goals.length > 0 &&
+      {balance && goals.length > 0 ? (
         goals.map((goal, index) => (
           <Grid item key={goal.id} xs={4}>
             <MainCard title={goal.name}>
@@ -182,7 +181,18 @@ export default function ManageGoals() {
               />
             </MainCard>
           </Grid>
-        ))}
+        ))
+      ) : goals.length === 0 ? (
+        <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <h3>You need to add some goals</h3>
+        </Grid>
+      ) : (
+        <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <h3>
+            You need to specify your income (recurrent inflow transaction)
+          </h3>
+        </Grid>
+      )}
     </Grid>
   );
 }
