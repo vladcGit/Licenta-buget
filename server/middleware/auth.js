@@ -8,7 +8,7 @@ const auth = async (req, res, next) => {
   try {
     const token = req.header("Authorization");
     if (!token)
-      return res.status(400).json({ error: "Not authenticated user" });
+      return res.status(401).json({ error: "Not authenticated user" });
     const userObject = jwt.verify(token, secret);
     req.user = await User.findOne({
       where: { id: userObject.id, email: userObject.email },
@@ -18,7 +18,7 @@ const auth = async (req, res, next) => {
     next();
   } catch (e) {
     console.error(e);
-    return res.status(400).json({ error: "Token is wrong or expired" });
+    return res.status(401).json({ error: "Token is wrong or expired" });
   }
 };
 
