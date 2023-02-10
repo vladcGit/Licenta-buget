@@ -14,7 +14,7 @@ const Investment = sequelize.define(
       allowNull: false,
     },
     amount: {
-      type: DataTypes.DECIMAL,
+      type: DataTypes.FLOAT,
       allowNull: false,
       validate: {
         min: 0,

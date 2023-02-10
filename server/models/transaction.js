@@ -19,7 +19,7 @@ const Transaction = sequelize.define(
       allowNull: false,
     },
     amount: {
-      type: DataTypes.DECIMAL,
+      type: DataTypes.FLOAT,
       allowNull: false,
       defaultValue: 0,
       validate: {

@@ -173,7 +173,7 @@ export default function MyDashboard() {
       });
       console.log(trans);
 
-      setBiggestTransactions(trans);
+      setBiggestTransactions(trans.filter((t) => t.type === "Outflow"));
     };
 
     fetchData();
